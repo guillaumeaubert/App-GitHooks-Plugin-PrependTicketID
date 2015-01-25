@@ -1,8 +1,8 @@
 App-GitHooks-Plugin-PrependTicketID
 ===================================
 
-[![Build Status](https://travis-ci.org/guillaumeaubert/App-GitHooks-Plugin-PrependTicketID.png?branch=master)](https://travis-ci.org/guillaumeaubert/App-GitHooks-Plugin-PrependTicketID)
-[![Coverage Status](https://coveralls.io/repos/guillaumeaubert/App-GitHooks-Plugin-PrependTicketID/badge.png?branch=master)](https://coveralls.io/r/guillaumeaubert/App-GitHooks-Plugin-PrependTicketID?branch=master)
+[![Build Status](https://travis-ci.org/guillaumeaubert/App-GitHooks-Plugin-PrependTicketID.svg?branch=master)](https://travis-ci.org/guillaumeaubert/App-GitHooks-Plugin-PrependTicketID)
+[![Coverage Status](https://coveralls.io/repos/guillaumeaubert/App-GitHooks-Plugin-PrependTicketID/badge.svg?branch=master)](https://coveralls.io/r/guillaumeaubert/App-GitHooks-Plugin-PrependTicketID?branch=master)
 
 App::GitHooks plugin to derive a ticket ID from the branch name and prepend it
 to the commit-message.
