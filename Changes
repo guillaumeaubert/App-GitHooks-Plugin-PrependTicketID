@@ -1,5 +1,8 @@
 Revision history for App-GitHooks-Plugin-PrependTicketID
 
+v1.1.0  2015-03-28
+        - Implement new commit_prefix_format config option.
+
 v1.0.1  2014-06-08
         - Noted git version in tests to help troubleshooting.
         - Required git v1.7.4.1.
