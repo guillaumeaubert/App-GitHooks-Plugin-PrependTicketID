@@ -34,17 +34,24 @@ our $VERSION = '1.0.1';
 =head1 CONFIGURATION OPTIONS
 
 This plugin supports the following options in the main section of your
-C<.githooksrc> file.
+C<.githooksrc> file:
 
 	project_prefixes = DEV
 	extract_ticket_id_from_branch = /^($project_prefixes\d+)/
 	normalize_branch_ticket_id = s/^(.*?)(\d+)$/\U$1-$2/
+
+Additionally, the plugin supports the following option in the
+C<[PrependTicketID]> section of your C<.githooksrc> file:
+
+	[PrependTicketID]
+	commit_prefix_format = /$ticket_id: /
 
 
 =head2 project_prefixes
 
 The list of valid ticket prefixes.
 
+	[_]
 	project_prefixes = OPS, DEV, TEST
 
 
@@ -53,6 +60,7 @@ The list of valid ticket prefixes.
 A regular expression with one capturing group that will extract the ticket ID
 from a branch name.
 
+	[_]
 	extract_ticket_id_from_branch = /^($project_prefixes\d+)/
 
 In the example above, if a branch is named C<dev1293_my_new_feature>, the
@@ -83,10 +91,22 @@ C<project_prefixes> configuration option, to avoid duplication of information.
 A replacement expression to normalize the ticket ID extracted with
 C<extract_ticket_id_from_branch>.
 
+	[_]
 	normalize_branch_ticket_id = s/^(.*?)(\d+)$/\U$1-$2/
 
 In the example above, C<dev1293_my_new_feature> gave C<dev1293>, which is then
 normalized as C<DEV-1293>.
+
+
+=head2 commit_prefix_format
+
+A regular expression that will be used to format the prefix of the commit message.
+
+By default, this plugin uses C<$ticket_id: >, but the following example would
+turn it into C<($ticket_id) >:
+
+	[PrependTicketID]
+	commit_prefix_format = /($ticket_id) /
 
 
 =head1 METHODS
@@ -117,8 +137,12 @@ sub run_prepare_commit_msg
 		# This catches ticket IDs specified via git commit -m "..." and edits via
 		# git commit --amend.
 
-		$commit_message->update_message( $branch_ticket_id . ': ' . $commit_message->get_message() )
-			if !defined( $ticket_id );
+		if ( !defined( $ticket_id ) )
+		{
+			my $commit_prefix_format = $app->get_config()->get_regex( 'PrependTicketID', 'commit_prefix_format' ) // '$ticket_id: ';
+			$commit_prefix_format =~ s/\$ticket_id/$branch_ticket_id/g;
+			$commit_message->update_message( $commit_prefix_format . $commit_message->get_message() );
+		}
 	}
 
 	return $PLUGIN_RETURN_PASSED;

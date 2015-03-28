@@ -68,6 +68,15 @@ my $tests =
 		commit_message => 'Test',
 		expected       => qr/^DEV-1234: Test/,
 	},
+	{
+		name           => 'The custom commit_prefix_format configuration option is respected.',
+		branch         => 'ga/dev1234_test_branch',
+		files          => $files,
+		config         => "[PrependTicketID]\n"
+			. 'commit_prefix_format = /($ticket_id) /' . "\n",
+		commit_message => 'Test',
+		expected       => qr/^\Q(DEV-1234) Test\E/,
+	},
 ];
 
 # Bail out if Git isn't available.
@@ -82,12 +91,16 @@ foreach my $test ( @$tests )
 		{
 			plan( tests => 6 );
 
+			$test->{'config'} = ''
+				if !defined( $test->{'config'} );
+
 			my $repository = ok_setup_repository(
 				cleanup_test_repository => 1,
 				config                  => "[_]\n"
 					. "project_prefixes = DEV\n"
 					. 'extract_ticket_id_from_branch = /^($project_prefixes\d+)/' . "\n"
-					. 'normalize_branch_ticket_id = s/^(.*?)(\d+)$/\U$1-$2/' . "\n",
+					. 'normalize_branch_ticket_id = s/^(.*?)(\d+)$/\U$1-$2/' . "\n"
+					. $test->{'config'},
 				hooks                   => [ 'prepare-commit-msg' ],
 				plugins                 => [ 'App::GitHooks::Plugin::PrependTicketID' ],
 			);
@@ -135,6 +148,7 @@ foreach my $test ( @$tests )
 				},
 				'Retrieve the commit message.',
 			);
+			note( "Commit message: >$commit_message<." );
 
 			# Check the format of the commit message.
 			like(
