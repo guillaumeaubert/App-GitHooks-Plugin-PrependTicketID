@@ -4,21 +4,21 @@ use ExtUtils::MakeMaker;
 WriteMakefile
 (
   'NAME' => 'App::GitHooks::Plugin::PrependTicketID',
-  'VERSION_FROM' => 'lib/App/GitHooks/Plugin/PrependTicketID.pm',
-  'PREREQ_PM' => {
-                   'App::GitHooks' => 0,
-                   'Capture::Tiny' => 0,
-                   'Git::Repository' => 0,
-                   'Test::Exception' => 0,
-                   'Test::FailWarnings' => 0,
-                   'Test::Requires::Git' => 1.005,
-                   'Test::More' => '0.94'
-                 },
-  'INSTALLDIRS' => 'site',
-  'EXE_FILES' => [],
   'PL_FILES' => {},
   'test' => {
               'TESTS' => 't/*.t'
-            }
+            },
+  'VERSION_FROM' => 'lib/App/GitHooks/Plugin/PrependTicketID.pm',
+  'EXE_FILES' => [],
+  'PREREQ_PM' => {
+                   'Test::Requires::Git' => '1.005',
+                   'Git::Repository' => 0,
+                   'Test::More' => '0.94',
+                   'Test::FailWarnings' => 0,
+                   'App::GitHooks' => 0,
+                   'Capture::Tiny' => 0,
+                   'Test::Exception' => 0
+                 },
+  'INSTALLDIRS' => 'site'
 )
 ;
